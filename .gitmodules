@@ -1,0 +1,3 @@
+[submodule "CTU_Case1/simple.template.universe"]
+	path = CTU_Case1/simple.template.universe
+	url = https://github.com/project-SIMPLE/simple.template.universe.git
