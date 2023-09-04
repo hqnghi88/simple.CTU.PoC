@@ -27,7 +27,7 @@ global {
 	}
 	
 	reflex c_water when: flip(0.01) {
-		create water {
+		create water { 
 			location <- one_of(poi where (each.type = "source")).location;
 			target <- one_of(poi where (each.type = "outlet")) ;
 		}
