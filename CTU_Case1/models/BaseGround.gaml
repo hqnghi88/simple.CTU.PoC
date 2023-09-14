@@ -16,15 +16,15 @@ global parent: physical_world {
 	point gravity <- {0, 0, -9.81};
 	int number_of_water_units <- 1 min: 0 max: 10;
 	list<point> origins_of_flow <- [{world.shape.width / 2, world.shape.height / 2}];
-	//	field terrain <- field(grid_file("../includes/t.tiff"));
-	int num <- 20;
+//		field terrain <- field(grid_file("../includes/t.tiff"));
+	int num <-20;
 	field terrain <- field(num, num);
 
 	//	geometry shape <- box({terrain.columns, terrain.rows, max(terrain.bands[0])*z_scale});
 	geometry shape <- box({num, num, 0});
 	float restitution <- 0.8; // the "bounciness" of the world
 	float friction <- 0.2; // the deceleration it imposes on other objects
-	int h1 <- 1;
+	int h1 <- 3;
 	int h2 <- 2;
 	float diffusion_rate <- 0.6;
 
@@ -50,9 +50,9 @@ global parent: physical_world {
 		//		}
 		//		
 		//	}
-		loop times: 2 {
-			int xx <- 5 + rnd(num - 5);
-			int yy <- 5 + rnd(num - 5);
+		loop times: 3 {
+			int xx <- 3 + rnd(num - 5);
+			int yy <- 3 + rnd(num - 5);
 			create building with: [location: {xx, yy, h1 + 1 + h2 * 0}];
 			create building with: [location: {xx, yy, h1 + 1 + h2 * 1}];
 			create building with: [location: {xx, yy, h1 + 1 + h2 * 2}];
@@ -85,6 +85,13 @@ global parent: physical_world {
 //
 //	} 
 	reflex flow1 {
+		ask building{
+			
+	 restitution <- 0.5;
+	 friction <- 0.5;
+	 damping <- 0.5;
+	 angular_damping <- 1.0;
+		}
 //		ask (water sort_by ((each.altitude + each.water_height))) {
 //			already <- false;
 //			do flow;
@@ -102,7 +109,7 @@ global parent: physical_world {
 	}
 
 species wall skills: [static_body] {
-	float restitution <- 1.0;
+	float restitution <- 0.0;
 	float friction <- 0.0;
 
 	aspect default {
@@ -114,24 +121,24 @@ species wall skills: [static_body] {
 species building skills: [dynamic_body] {
 
 	init {
-		velocity <- {rnd(2) - 1, rnd(2) - 1, rnd(2) - 1};
+//		velocity <- {rnd(2) - 1, rnd(2) - 1, rnd(2) - 1};
 	}
 
 	geometry shape <- box(2, 2, h2);
 	float mass <- 10.05;
 	float restitution <- 0.0;
 	float friction <- 0.0;
-	float damping <- 0.99;
-	float angular_damping <- 0.99;
+	float damping <- 0.0;
+	float angular_damping <- 0.0;
 	rgb color <- #red;
 }
 
 species water skills: [dynamic_body] {
 	geometry shape <- cube(1.0);
-	float restitution <- 0.0;
-	float friction <- 0.0;
-	float damping <- 0.2;
-	float angular_damping <- 0.2;
+	float restitution <- 0.5;
+	float friction <- 0.5;
+	float damping <- 0.5;
+	float angular_damping <- 0.5;
 	float mass <- 10.005;
 	rgb color <- one_of(brewer_colors("Blues"));
 	float water_level;
@@ -202,8 +209,8 @@ experiment "3D view" type: gui {
 //	} 
 //	parameter "Location of the camera" var: camera_loc among: [#from_up_front, #from_above, #from_up_left, #from_up_right];
 //	parameter "Distance of the camera" var: distance min: 1 max: 1000 slider: true;
-	parameter "Number of water agents per cycle" var: number_of_water_units;
-	output synchronized: true {
+//	parameter "Number of water agents per cycle" var: number_of_water_units;
+	output synchronized: false {
 	//		layout #split;
 		display "Flow" type: 3d background: #white antialias: true {
 		//			camera #default location: camera_loc distance: distance dynamic: true;
